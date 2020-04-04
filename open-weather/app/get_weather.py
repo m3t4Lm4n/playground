@@ -2,14 +2,18 @@ import os
 import pyowm
 import re
 
+
 class EmptyValue(Exception):
     pass
+
+
 class InvalidFormat(Exception):
     pass
 
+
 try:
     key = os.environ['OPENWEATHER_API_KEY']
-    key_valid = re.match('\w{32}', key)
+    key_valid = re.match(r'\w{32}', key)
     if len(key) == 0:
         raise EmptyValue('Environment varialbe OPENWEATHER_API_KEY is empty.')
     if not key_valid:
@@ -31,13 +35,17 @@ except KeyError:
     exit('Undefined environment variable CITY_NAME.')
 
 owm = pyowm.OWM(key)
-if owm.is_API_online() == True:
+if owm.is_API_online():
     observation = owm.weather_at_place(city)
-    location    = observation.get_location().get_name()
-    weather     = observation.get_weather()
+    location = observation.get_location().get_name()
+    weather = observation.get_weather()
     description = weather.get_detailed_status()
     temperature = weather.get_temperature()['temp']
-    humidity    = weather.get_humidity()
-    print(f'source=openweathermap, city="{city}", description="{description}", temp={temperature}, humidity={humidity}')
+    humidity = weather.get_humidity()
+    print(f'source=openweathermap,'
+          ' city="{city}",'
+          ' description="{description}",'
+          ' temp={temperature},'
+          ' humidity={humidity}')
 else:
     exit('API not online.')

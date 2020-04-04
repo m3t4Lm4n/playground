@@ -1,20 +1,25 @@
 # This workflow will install Python dependencies, run tests and lint with a single version of Python
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
 
-name: get_weather.py
+name: Python lint
 
 on:
   push:
     branches: [ master ]
+    paths:
+      - '**.py'
   pull_request:
     branches: [ master ]
+    paths:
+      - '**.py'
 
 jobs:
   build:
 
     runs-on: ubuntu-latest
     env:
-      working_directory: ./open-weather/app
+      OPENWEATHER_API_KEY: ${{ secrets.OPENWEATHER_API_KEY }}
+      CITY_NAME: "Honolulu"
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python 3.8
@@ -24,7 +29,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r ./open-weather/app/requirements.txt
+        pip install -r requirements.txt
     - name: Lint with flake8
       run: |
         pip install flake8
@@ -35,4 +40,4 @@ jobs:
     - name: Test with pytest
       run: |
         pip install pytest
-        pytest ./open-weather/app/get_weather.py
+        pytest
