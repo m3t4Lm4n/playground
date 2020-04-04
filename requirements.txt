@@ -1,0 +1,2 @@
+# Global requirements file for GitHub actions
+pyowm
