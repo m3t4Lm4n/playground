@@ -1,14 +1,10 @@
 import os
-import sys
 import pyowm
-import requests
 import re
 
 class EmptyValue(Exception):
     pass
 class InvalidFormat(Exception):
-    pass
-class ApiError(Exception):
     pass
 
 try:
@@ -34,17 +30,14 @@ try:
 except KeyError:
     exit('Undefined environment variable CITY_NAME.')
 
-try:
-    api_call        = 'http://api.openweathermap.org/data/2.5/weather?q=' + city + '&appid=' + key
-    api_response    = requests.get(api_call)
-    if api_response.status_code != 200:
-        raise ApiError(api_response.status_code)
-    else:
-        response_json   = api_response.json()
-        response_city   = response_json['name']
-        response_desc   = response_json['weather'][0]['description']
-        response_temp   = response_json['main']['temp']
-        response_hmdt   = response_json['main']['humidity']
-        print(f'source=openweathermap, city="{response_city}", description="{response_desc}", temp={response_temp}, humidity={response_hmdt}')
-except ApiError:
-    exit(f'API call ended with status code {api_response.status_code}: {api_response.reason}')
+owm = pyowm.OWM(key)
+if owm.is_API_online() == True:
+    observation = owm.weather_at_place(city)
+    location    = observation.get_location().get_name()
+    weather     = observation.get_weather()
+    description = weather.get_detailed_status()
+    temperature = weather.get_temperature()['temp']
+    humidity    = weather.get_humidity()
+    print(f'source=openweathermap, city="{city}", description="{description}", temp={temperature}, humidity={humidity}')
+else:
+    exit('API not online.')
