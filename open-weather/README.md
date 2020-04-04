@@ -3,10 +3,12 @@ Python script that prints current weather using Open Weather api
 
 # Usage
 ```
-python3 -m pyenv open-weather
-source open-weather/bin/activate
+python3 -m pyenv env
+source env/bin/activate
 pip3 install -r requirements.txt
-python3 get_weather.py "API_KEY" "CITY"
+declare -x OPENWEATHER_API_KEY=XXX
+declare -x CITY_NAME=Honolulu
+python3 get_weather.py
 ```
 
 # Sample Output
