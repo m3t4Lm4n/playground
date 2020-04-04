@@ -1,0 +1,4 @@
+---
+docker_gpg_url: https://download.docker.com/linux/ubuntu/gpg
+docker_repo: https://download.docker.com/linux/ubuntu
+docker_log_driver: syslog

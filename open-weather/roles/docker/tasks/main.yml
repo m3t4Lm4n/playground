@@ -1,0 +1,54 @@
+---
+- name: Install required packages
+  package:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg-agent
+      - software-properties-common
+    state: latest
+
+- name: Add Docker's official GPG key
+  apt_key:
+    state: present
+    url: '{{ docker_gpg_url }}'
+
+- name: Add Docker's repository
+  apt_repository:
+    repo: deb {{ docker_repo }} {{ ansible_distribution_release }} stable
+    filename: docker
+    state: present
+    update_cache: True
+
+- name: Install Docker packages
+  package:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+    state: latest
+
+- name: Configure docker to use syslog facility
+  template:
+    src: daemon.json.j2
+    dest: /etc/docker/daemon.json
+    owner: root
+    group: root
+    mode: 0600
+  notify: Restart docker daemon
+
+- block:
+    - name: Verify that docker is working
+      command: docker run hello-world
+      register: docker_output
+      failed_when: docker_output.rc != 0
+    
+    - name: Check result of docker command
+      assert:
+        that:
+          - docker_output.rc == 0
+          - docker_output.failed == false
+        success_msg: '{{ docker_output.stdout_lines }}'
+        fail_msg: '{{ docker_output.stderr_lines }}'
+  tags: docker_run
