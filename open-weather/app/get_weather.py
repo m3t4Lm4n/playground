@@ -49,3 +49,4 @@ if owm.is_API_online():
           ' humidity={humidity}')
 else:
     exit('API not online.')
+
