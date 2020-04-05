@@ -7,7 +7,7 @@ on:
   push:
     branches: '**'
     paths:
-      - './open-weather/app/*.py'
+      - 'open-weather/app/*.py'
 #  pull_request:
 #    branches: [ master ]
 #    paths:
