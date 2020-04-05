@@ -1,17 +1,17 @@
 # This workflow will install Python dependencies, run tests and lint with a single version of Python
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
 
-name: Python lint with flake8
+name: Python lint with flake8 and test run
 
 on:
   push:
-    branches: [ master ]
+    branches: '**'
     paths:
-      - '**.py'
-  pull_request:
-    branches: [ master ]
-    paths:
-      - '**.py'
+      - './open-weather/app/*.py'
+#  pull_request:
+#    branches: [ master ]
+#    paths:
+#      - '**.py'
 
 jobs:
   build:
@@ -36,8 +36,7 @@ jobs:
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test run application
-      run: python {0}
+      run: python ./open-weather/app/get_weather.py
       env:
         OPENWEATHER_API_KEY: ${{ secrets.OPENWEATHER_API_KEY }}
         CITY_NAME: "Honolulu"
-      working-directory: .
